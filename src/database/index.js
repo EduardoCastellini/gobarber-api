@@ -23,7 +23,12 @@ class Database {
       .map(model => model.associate && model.associate(this.connection.models));
   }
 
-  mongo() {}
+  mongo() {
+    this.mongoConnection = Mongoose.connect(
+      'mongodb://localhost:27017/gobarber',
+      { useNewUrlParser: true, useFindAndModify: true }
+    );
+  }
 }
 
 export default new Database();
