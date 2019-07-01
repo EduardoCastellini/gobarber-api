@@ -42,7 +42,7 @@ class AppointmentController {
     });
 
     if (!(await schema.isValid(req.body))) {
-      return res.status(400).json({ error: 'Validade Fails' });
+      return res.status(400).json({ error: 'Validade Fails!' });
     }
 
     const { provider_id, date } = req.body;
@@ -57,7 +57,16 @@ class AppointmentController {
     if (!isProvider) {
       return res
         .status(401)
-        .json({ error: 'You can only create appointments with providers' });
+        .json({ error: 'You can only create appointments with providers!' });
+    }
+
+    /**
+     * check if provider_id == userId
+     */
+    if (req.userId === provider_id) {
+      return res.status(401).json({
+        error: 'Is not allowed to schedule appointment for you even!',
+      });
     }
 
     /**
@@ -66,7 +75,7 @@ class AppointmentController {
     const hourStart = startOfHour(parseISO(date));
 
     if (isBefore(hourStart, new Date())) {
-      return res.status(400).json({ error: 'Past dates ere not permitted' });
+      return res.status(400).json({ error: 'Past dates ere not permitted!' });
     }
 
     /**
@@ -83,7 +92,7 @@ class AppointmentController {
     if (checkeAvailabity) {
       return res
         .status(400)
-        .json({ error: 'Appointment date is not available ' });
+        .json({ error: 'Appointment date is not available!' });
     }
 
     const appointment = await Appointment.create({
